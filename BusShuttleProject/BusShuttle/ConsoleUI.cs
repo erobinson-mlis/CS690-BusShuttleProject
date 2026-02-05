@@ -69,18 +69,20 @@ public class ConsoleUI {
 				                    new SelectionPrompt<string>()
 				                        .Title("What do you want to do?")
 				                        .AddChoices(new[] {
-				                            "show busiest stop","add stop","delete stop", "list stops", "end"
+				                            "show busiest stop","add driver", "delete driver", "list drivers", "add stop","delete stop", "list stops", "end"
 				                        }));
 
                 if(command=="add stop") {
                     var newStopName = AnsiConsole.Prompt(new TextPrompt<string>("Enter new stop name:"));
                     dataManager.AddStop(new Stop(newStopName));
+
                 } else if(command=="delete stop") {
                     Stop selectedStop = AnsiConsole.Prompt(
 				            new SelectionPrompt<Stop>()
 				                .Title("Select a stop")
 				                .AddChoices(dataManager.Stops));
                     dataManager.RemoveStop(selectedStop);
+
                 } else if(command=="list stops") {
                     var table = new Table();
 
@@ -94,11 +96,30 @@ public class ConsoleUI {
                 } else if(command=="show busiest stop") {
                     var result = Reporter.FindBusiestStop(dataManager.PassengerData);
                     Console.WriteLine("The busiest stop is: "+result.Name);
+                
+                } else if(command=="add driver") {
+                    var newDriverName = AnsiConsole.Prompt(new TextPrompt<string>("Enter new driver name: "));
+                    dataManager.AddNewDriver(new Driver(newDriverName));
+
+                } else if(command=="delete driver") {
+                    Driver selectedDriver = AnsiConsole.Prompt(
+				            new SelectionPrompt<Driver>()
+				                .Title("Select a driver")
+				                .AddChoices(dataManager.Drivers));
+                    dataManager.RemoveDriver(selectedDriver);
+                
+                } else if(command=="list drivers") {
+                    var table = new Table();
+
+                    table.AddColumn("Driver Name");
+
+                    foreach(var driver in dataManager.Drivers) {
+                        table.AddRow(driver.Name);
+                    }
+                    AnsiConsole.Write(table);
                 }
 
-
             } while(command!="end");
-
         }
     }
 
